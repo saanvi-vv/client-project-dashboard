@@ -79,8 +79,9 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       onClose();
     } catch (err: any) {
       setError(err.message);
-    } fontMethod:
-    setIsSubmitting(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

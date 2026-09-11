@@ -66,33 +66,46 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     fetchInitialActivities();
     fetchNotifications();
 
-    const newSocket = io('/', {
-      auth: { token },
-      transports: ['websocket']
-    });
+    // Socket.io is optional — works in local dev but not on Vercel serverless
+    try {
+      const socketUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+      const newSocket = io(socketUrl, {
+        auth: { token },
+        transports: ['websocket'],
+        reconnectionAttempts: 3,
+        timeout: 5000
+      });
 
-    newSocket.on('connect', () => {
-      console.log('⚡ Socket connected:', newSocket.id);
-    });
+      newSocket.on('connect', () => {
+        console.log('⚡ Socket connected:', newSocket.id);
+      });
 
-    newSocket.on('presence:update', (data: { activeUsersCount: number }) => {
-      setOnlineCount(data.activeUsersCount);
-    });
+      newSocket.on('connect_error', () => {
+        console.log('Socket.io not available (serverless mode) — using REST polling');
+        newSocket.disconnect();
+      });
 
-    newSocket.on('activity:new', (newActivity: ActivityLog) => {
-      setActivities((prev) => [newActivity, ...prev.slice(0, 19)]);
-    });
+      newSocket.on('presence:update', (data: { activeUsersCount: number }) => {
+        setOnlineCount(data.activeUsersCount);
+      });
 
-    newSocket.on('notification:new', (newNotification: NotificationItem) => {
-      setNotifications((prev) => [newNotification, ...prev]);
-      setUnreadNotificationCount((prev) => prev + 1);
-    });
+      newSocket.on('activity:new', (newActivity: ActivityLog) => {
+        setActivities((prev) => [newActivity, ...prev.slice(0, 19)]);
+      });
 
-    setSocket(newSocket);
+      newSocket.on('notification:new', (newNotification: NotificationItem) => {
+        setNotifications((prev) => [newNotification, ...prev]);
+        setUnreadNotificationCount((prev) => prev + 1);
+      });
 
-    return () => {
-      newSocket.disconnect();
-    };
+      setSocket(newSocket);
+
+      return () => {
+        newSocket.disconnect();
+      };
+    } catch (e) {
+      console.log('Socket.io initialization skipped');
+    }
   }, [token, user]);
 
   const markAllNotificationsRead = async () => {
