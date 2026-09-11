@@ -9,12 +9,11 @@ import {
   Plus, 
   Calendar, 
   Flame, 
-  Clock, 
-  CheckCircle2
+  Clock
 } from 'lucide-react';
 
 export const PMDashboard: React.FC = () => {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
 
   const [stats, setStats] = useState<any>(null);
   const [tasks, setTasks] = useState<Task[]>([]);

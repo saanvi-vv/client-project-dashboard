@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Task, TaskStatus } from '../types';
 import { LiveActivityFeed } from '../components/LiveActivityFeed';
 import { TaskListFilters } from '../components/TaskListFilters';
-import { Code2, AlertTriangle, CheckCircle2, ListTodo } from 'lucide-react';
+import { Code2, AlertTriangle, ListTodo } from 'lucide-react';
 
 export const DevDashboard: React.FC = () => {
   const { token, user } = useAuth();
@@ -54,7 +54,6 @@ export const DevDashboard: React.FC = () => {
 
   const overdueCount = tasks.filter(t => t.isOverdue).length;
   const inProgressCount = tasks.filter(t => t.status === 'IN_PROGRESS').length;
-  const completedCount = tasks.filter(t => t.status === 'DONE').length;
 
   return (
     <div className="space-y-6">

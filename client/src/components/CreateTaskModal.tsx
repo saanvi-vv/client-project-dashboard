@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Client, User, TaskStatus, TaskPriority } from '../types';
+import { User, TaskPriority } from '../types';
 import { X, PlusCircle, AlertCircle } from 'lucide-react';
 
 interface CreateTaskModalProps {

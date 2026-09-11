@@ -8,7 +8,6 @@ import { CreateTaskModal } from '../components/CreateTaskModal';
 import { 
   FolderKanban, 
   CheckCircle2, 
-  Clock, 
   AlertTriangle, 
   Users, 
   Plus,
@@ -16,7 +15,7 @@ import {
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const { onlineCount } = useSocket();
 
   const [stats, setStats] = useState<any>(null);
