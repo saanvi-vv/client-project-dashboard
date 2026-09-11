@@ -116,10 +116,10 @@ app.get('/api/clients', authenticate, authorize([Role.ADMIN, Role.PROJECT_MANAGE
 
 app.post('/api/clients', authenticate, authorize([Role.ADMIN]), async (req, res) => {
   try {
-    const data = createClientSchema.parse(req.body);
-    const existing = await prisma.client.findUnique({ where: { email: data.email } });
+    const body = createClientSchema.parse(req.body);
+    const existing = await prisma.client.findUnique({ where: { email: body.email } });
     if (existing) return res.status(400).json({ status: 'error', message: 'Client email already exists' });
-    const client = await prisma.client.create({ data });
+    const client = await prisma.client.create({ data: { name: body.name, email: body.email, company: body.company } });
     return res.status(201).json({ status: 'success', data: { client } });
   } catch (e: any) { return res.status(400).json({ status: 'error', message: e.message }); }
 });
